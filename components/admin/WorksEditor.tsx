@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { WorkItem } from '@/lib/types';
+import ImageUpload from './ImageUpload';
 
 const BLANK_WORK: Omit<WorkItem, 'id'> = {
   title: '',
@@ -82,12 +83,11 @@ export default function WorksEditor({ initial }: { initial: WorkItem[] }) {
             className={inputClass}
           />
         </Field>
-        <Field label="画像URL">
-          <input
+        <Field label="画像">
+          <ImageUpload
             value={editing.image}
-            onChange={(e) => setEditing({ ...editing, image: e.target.value })}
-            placeholder="https://..."
-            className={inputClass}
+            onChange={(url) => setEditing({ ...editing, image: url })}
+            label="作品画像"
           />
         </Field>
         <Field label="リンクURL">

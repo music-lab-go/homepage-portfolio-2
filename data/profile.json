@@ -1,9 +1,15 @@
 {
-  "name": "Your Name",
+  "name": "TEST",
   "bio": "Artist, musician, and creator based in Japan.",
   "photo": "/images/profile.jpg",
   "links": [
-    { "label": "Twitter", "url": "https://twitter.com/" },
-    { "label": "Instagram", "url": "https://instagram.com/" }
+    {
+      "label": "Twitter",
+      "url": "https://twitter.com/"
+    },
+    {
+      "label": "Instagram",
+      "url": "https://instagram.com/"
+    }
   ]
 }

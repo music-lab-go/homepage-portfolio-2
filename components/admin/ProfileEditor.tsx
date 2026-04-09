@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { Profile } from '@/lib/types';
+import ImageUpload from './ImageUpload';
 
 export default function ProfileEditor({ initial }: { initial: Profile }) {
   const [data, setData] = useState<Profile>(initial);
@@ -51,12 +52,11 @@ export default function ProfileEditor({ initial }: { initial: Profile }) {
           className={inputClass}
         />
       </Field>
-      <Field label="写真URL">
-        <input
+      <Field label="写真">
+        <ImageUpload
           value={data.photo}
-          onChange={(e) => setData({ ...data, photo: e.target.value })}
-          placeholder="/images/profile.jpg または https://..."
-          className={inputClass}
+          onChange={(url) => setData({ ...data, photo: url })}
+          label="プロフィール写真"
         />
       </Field>
 
