@@ -1,6 +1,19 @@
 import Link from 'next/link';
+import { getLang } from '@/lib/i18n';
+// t() not needed here — nav labels are hardcoded
+import LangSwitcher from './LangSwitcher';
 
-export default function Navigation() {
+const NAV_LABELS = {
+  profile:  { ja: 'Profile',  en: 'Profile'  },
+  works:    { ja: 'Works',    en: 'Works'    },
+  schedule: { ja: 'Schedule', en: 'Schedule' },
+  contact:  { ja: 'Contact',  en: 'Contact'  },
+};
+
+export default async function Navigation() {
+  const lang = await getLang();
+  const l = (key: keyof typeof NAV_LABELS) => NAV_LABELS[key][lang];
+
   return (
     <header className="sticky top-0 z-50 bg-[var(--background)] border-b border-[var(--border)]">
       <nav className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
@@ -12,17 +25,18 @@ export default function Navigation() {
         </Link>
         <div className="flex items-center gap-8">
           <Link href="/" className="text-sm text-[var(--foreground)] hover:opacity-60 transition-opacity">
-            Profile
+            {l('profile')}
           </Link>
           <Link href="/works" className="text-sm text-[var(--foreground)] hover:opacity-60 transition-opacity">
-            Works
+            {l('works')}
           </Link>
           <Link href="/schedule" className="text-sm text-[var(--foreground)] hover:opacity-60 transition-opacity">
-            Schedule
+            {l('schedule')}
           </Link>
           <Link href="/schedule#contact" className="text-sm text-[var(--foreground)] hover:opacity-60 transition-opacity">
-            Contact
+            {l('contact')}
           </Link>
+          <LangSwitcher current={lang} />
         </div>
       </nav>
     </header>

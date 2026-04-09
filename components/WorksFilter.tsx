@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import type { WorkItem } from '@/lib/types';
+import type { WorkItem, Lang } from '@/lib/types';
 import WorkCard from './WorkCard';
 
 const CATEGORIES = ['all', 'music', 'art', 'project'] as const;
-const LABELS: Record<string, string> = {
-  all: 'All',
-  music: 'Music',
-  art: 'Art',
-  project: 'Project',
+const LABELS: Record<string, { ja: string; en: string }> = {
+  all:     { ja: 'すべて', en: 'All'     },
+  music:   { ja: 'Music',  en: 'Music'   },
+  art:     { ja: 'Art',    en: 'Art'     },
+  project: { ja: 'Project',en: 'Project' },
 };
 
-export default function WorksFilter({ works }: { works: WorkItem[] }) {
+export default function WorksFilter({ works, lang }: { works: WorkItem[]; lang: Lang }) {
   const [active, setActive] = useState<string>('all');
 
   const filtered = active === 'all' ? works : works.filter((w) => w.category === active);
@@ -30,17 +30,19 @@ export default function WorksFilter({ works }: { works: WorkItem[] }) {
                 : 'text-[var(--muted)] hover:text-[var(--foreground)]'
             }`}
           >
-            {LABELS[cat]}
+            {LABELS[cat][lang]}
           </button>
         ))}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((work) => (
-          <WorkCard key={work.id} work={work} />
+          <WorkCard key={work.id} work={work} lang={lang} />
         ))}
       </div>
       {filtered.length === 0 && (
-        <p className="text-[var(--muted)] text-sm text-center py-16">No works found.</p>
+        <p className="text-[var(--muted)] text-sm text-center py-16">
+          {lang === 'ja' ? '作品が見つかりません。' : 'No works found.'}
+        </p>
       )}
     </div>
   );

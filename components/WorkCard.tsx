@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import type { WorkItem } from '@/lib/types';
+import type { WorkItem, Lang } from '@/lib/types';
+import { t } from '@/lib/t';
 
 const CATEGORY_LABELS: Record<WorkItem['category'], string> = {
   music: 'Music',
@@ -7,14 +8,17 @@ const CATEGORY_LABELS: Record<WorkItem['category'], string> = {
   project: 'Project',
 };
 
-export default function WorkCard({ work }: { work: WorkItem }) {
+export default function WorkCard({ work, lang }: { work: WorkItem; lang: Lang }) {
+  const title = t(work.title, lang);
+  const description = t(work.description, lang);
+
   const Card = (
     <div className="group border border-[var(--border)] hover:border-[var(--foreground)] transition-colors">
       {work.image && (
         <div className="relative w-full aspect-video overflow-hidden bg-zinc-100">
           <Image
             src={work.image}
-            alt={work.title}
+            alt={title}
             fill
             className="object-cover group-hover:opacity-90 transition-opacity"
             unoptimized={work.image.startsWith('http')}
@@ -25,9 +29,9 @@ export default function WorkCard({ work }: { work: WorkItem }) {
         <span className="text-xs uppercase tracking-widest text-[var(--muted)]">
           {CATEGORY_LABELS[work.category]}
         </span>
-        <h3 className="text-base font-light">{work.title}</h3>
-        {work.description && (
-          <p className="text-sm text-[var(--muted)] leading-relaxed">{work.description}</p>
+        <h3 className="text-base font-light">{title}</h3>
+        {description && (
+          <p className="text-sm text-[var(--muted)] leading-relaxed">{description}</p>
         )}
       </div>
     </div>
