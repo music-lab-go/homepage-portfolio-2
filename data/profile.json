@@ -1,15 +1,9 @@
 {
-  "name": "TEST",
-  "bio": "Artist, musician, and creator based in Japan.",
+  "name": { "ja": "TEST", "en": "TEST" },
+  "bio": { "ja": "日本を拠点とするアーティスト、ミュージシャン、クリエイター。", "en": "Artist, musician, and creator based in Japan." },
   "photo": "/images/profile.jpg",
   "links": [
-    {
-      "label": "Twitter",
-      "url": "https://twitter.com/"
-    },
-    {
-      "label": "Instagram",
-      "url": "https://instagram.com/"
-    }
+    { "label": "Twitter", "url": "https://twitter.com/" },
+    { "label": "Instagram", "url": "https://instagram.com/" }
   ]
 }

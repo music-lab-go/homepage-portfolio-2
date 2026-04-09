@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import type { WorkItem } from '@/lib/types';
+import type { WorkItem, LocalizedString } from '@/lib/types';
 import ImageUpload from './ImageUpload';
 
 const BLANK_WORK: Omit<WorkItem, 'id'> = {
-  title: '',
+  title: { ja: '', en: '' },
   category: 'music',
-  description: '',
+  description: { ja: '', en: '' },
   image: '',
   link: '',
 };
@@ -57,13 +57,11 @@ export default function WorksEditor({ initial }: { initial: WorkItem[] }) {
     return (
       <div className="space-y-4">
         <h3 className="text-sm font-light">{isNew ? '新規追加' : '編集'}</h3>
-        <Field label="タイトル">
-          <input
-            value={editing.title}
-            onChange={(e) => setEditing({ ...editing, title: e.target.value })}
-            className={inputClass}
-          />
-        </Field>
+        <LocalizedField
+          label="タイトル"
+          value={editing.title}
+          onChange={(v) => setEditing({ ...editing, title: v })}
+        />
         <Field label="カテゴリ">
           <select
             value={editing.category}
@@ -75,14 +73,12 @@ export default function WorksEditor({ initial }: { initial: WorkItem[] }) {
             <option value="project">Project</option>
           </select>
         </Field>
-        <Field label="説明">
-          <textarea
-            value={editing.description}
-            onChange={(e) => setEditing({ ...editing, description: e.target.value })}
-            rows={3}
-            className={inputClass}
-          />
-        </Field>
+        <LocalizedField
+          label="説明"
+          value={editing.description}
+          onChange={(v) => setEditing({ ...editing, description: v })}
+          multiline
+        />
         <Field label="画像">
           <ImageUpload
             value={editing.image}
@@ -122,7 +118,7 @@ export default function WorksEditor({ initial }: { initial: WorkItem[] }) {
         {works.map((w) => (
           <div key={w.id} className="py-3 flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-light">{w.title || '(無題)'}</p>
+              <p className="text-sm font-light">{w.title.ja || '(無題)'}</p>
               <p className="text-xs text-[var(--muted)] capitalize">{w.category}</p>
             </div>
             <div className="flex gap-4">
@@ -143,6 +139,60 @@ export default function WorksEditor({ initial }: { initial: WorkItem[] }) {
           + 追加
         </button>
         <SaveButton status={status} onSave={handleSave} />
+      </div>
+    </div>
+  );
+}
+
+function LocalizedField({
+  label,
+  value,
+  onChange,
+  multiline = false,
+}: {
+  label: string;
+  value: LocalizedString;
+  onChange: (v: LocalizedString) => void;
+  multiline?: boolean;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="text-xs text-[var(--muted)]">{label}</label>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-0.5">
+          <span className="text-[10px] text-[var(--muted)] uppercase tracking-widest">JA</span>
+          {multiline ? (
+            <textarea
+              value={value.ja}
+              onChange={(e) => onChange({ ...value, ja: e.target.value })}
+              rows={3}
+              className={inputClass}
+            />
+          ) : (
+            <input
+              value={value.ja}
+              onChange={(e) => onChange({ ...value, ja: e.target.value })}
+              className={inputClass}
+            />
+          )}
+        </div>
+        <div className="space-y-0.5">
+          <span className="text-[10px] text-[var(--muted)] uppercase tracking-widest">EN</span>
+          {multiline ? (
+            <textarea
+              value={value.en}
+              onChange={(e) => onChange({ ...value, en: e.target.value })}
+              rows={3}
+              className={inputClass}
+            />
+          ) : (
+            <input
+              value={value.en}
+              onChange={(e) => onChange({ ...value, en: e.target.value })}
+              className={inputClass}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

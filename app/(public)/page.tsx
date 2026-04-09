@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import { getProfile } from '@/lib/data';
+import { getLang } from '@/lib/i18n';
+import { t } from '@/lib/t';
 
 export default async function HomePage() {
-  const profile = await getProfile();
+  const [profile, lang] = await Promise.all([getProfile(), getLang()]);
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-24">
@@ -11,7 +13,7 @@ export default async function HomePage() {
           <div className="relative w-48 h-48 overflow-hidden border border-[var(--border)]">
             <Image
               src={profile.photo}
-              alt={profile.name}
+              alt={t(profile.name, lang)}
               fill
               className="object-cover"
               priority
@@ -20,8 +22,8 @@ export default async function HomePage() {
           </div>
         )}
         <div className="space-y-4">
-          <h1 className="text-4xl font-light tracking-wide">{profile.name}</h1>
-          <p className="text-lg leading-relaxed text-[var(--muted)] max-w-xl">{profile.bio}</p>
+          <h1 className="text-4xl font-light tracking-wide">{t(profile.name, lang)}</h1>
+          <p className="text-lg leading-relaxed text-[var(--muted)] max-w-xl">{t(profile.bio, lang)}</p>
         </div>
         {profile.links.length > 0 && (
           <div className="flex flex-wrap gap-6 justify-center">

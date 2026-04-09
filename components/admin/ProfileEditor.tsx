@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Profile } from '@/lib/types';
+import type { Profile, LocalizedString } from '@/lib/types';
 import ImageUpload from './ImageUpload';
 
 export default function ProfileEditor({ initial }: { initial: Profile }) {
@@ -37,21 +37,17 @@ export default function ProfileEditor({ initial }: { initial: Profile }) {
 
   return (
     <div className="space-y-5">
-      <Field label="名前">
-        <input
-          value={data.name}
-          onChange={(e) => setData({ ...data, name: e.target.value })}
-          className={inputClass}
-        />
-      </Field>
-      <Field label="Bio">
-        <textarea
-          value={data.bio}
-          onChange={(e) => setData({ ...data, bio: e.target.value })}
-          rows={4}
-          className={inputClass}
-        />
-      </Field>
+      <LocalizedField
+        label="名前"
+        value={data.name}
+        onChange={(v) => setData({ ...data, name: v })}
+      />
+      <LocalizedField
+        label="Bio"
+        value={data.bio}
+        onChange={(v) => setData({ ...data, bio: v })}
+        multiline
+      />
       <Field label="写真">
         <ImageUpload
           value={data.photo}
@@ -84,7 +80,7 @@ export default function ProfileEditor({ initial }: { initial: Profile }) {
             </button>
           </div>
         ))}
-        <button onClick={addLink} className={`${smallBtnClass} mt-1`}>
+        <button onClick={addLink} className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors mt-1">
           + リンクを追加
         </button>
       </div>
@@ -94,10 +90,62 @@ export default function ProfileEditor({ initial }: { initial: Profile }) {
   );
 }
 
+function LocalizedField({
+  label,
+  value,
+  onChange,
+  multiline = false,
+}: {
+  label: string;
+  value: LocalizedString;
+  onChange: (v: LocalizedString) => void;
+  multiline?: boolean;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="text-xs text-[var(--muted)]">{label}</label>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-0.5">
+          <span className="text-[10px] text-[var(--muted)] uppercase tracking-widest">JA</span>
+          {multiline ? (
+            <textarea
+              value={value.ja}
+              onChange={(e) => onChange({ ...value, ja: e.target.value })}
+              rows={3}
+              className={inputClass}
+            />
+          ) : (
+            <input
+              value={value.ja}
+              onChange={(e) => onChange({ ...value, ja: e.target.value })}
+              className={inputClass}
+            />
+          )}
+        </div>
+        <div className="space-y-0.5">
+          <span className="text-[10px] text-[var(--muted)] uppercase tracking-widest">EN</span>
+          {multiline ? (
+            <textarea
+              value={value.en}
+              onChange={(e) => onChange({ ...value, en: e.target.value })}
+              rows={3}
+              className={inputClass}
+            />
+          ) : (
+            <input
+              value={value.en}
+              onChange={(e) => onChange({ ...value, en: e.target.value })}
+              className={inputClass}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const inputClass =
   'w-full border border-[var(--border)] px-3 py-2 text-sm bg-transparent outline-none focus:border-[var(--foreground)] transition-colors';
-const smallBtnClass =
-  'text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

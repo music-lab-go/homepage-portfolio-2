@@ -2,8 +2,8 @@
   {
     "id": "1",
     "date": "2026-05-01",
-    "title": "Live at Venue Name",
-    "description": "Event description.",
+    "title": { "ja": "ライブ at 会場名", "en": "Live at Venue Name" },
+    "description": { "ja": "イベントの説明。", "en": "Event description." },
     "link": ""
   }
 ]

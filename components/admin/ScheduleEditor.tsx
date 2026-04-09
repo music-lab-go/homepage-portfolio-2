@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import type { ScheduleItem } from '@/lib/types';
+import type { ScheduleItem, LocalizedString } from '@/lib/types';
 
 const BLANK: Omit<ScheduleItem, 'id'> = {
   date: '',
-  title: '',
-  description: '',
+  title: { ja: '', en: '' },
+  description: { ja: '', en: '' },
   link: '',
 };
 
@@ -63,21 +63,17 @@ export default function ScheduleEditor({ initial }: { initial: ScheduleItem[] })
             className={inputClass}
           />
         </Field>
-        <Field label="タイトル">
-          <input
-            value={editing.title}
-            onChange={(e) => setEditing({ ...editing, title: e.target.value })}
-            className={inputClass}
-          />
-        </Field>
-        <Field label="説明">
-          <textarea
-            value={editing.description}
-            onChange={(e) => setEditing({ ...editing, description: e.target.value })}
-            rows={3}
-            className={inputClass}
-          />
-        </Field>
+        <LocalizedField
+          label="タイトル"
+          value={editing.title}
+          onChange={(v) => setEditing({ ...editing, title: v })}
+        />
+        <LocalizedField
+          label="説明"
+          value={editing.description}
+          onChange={(v) => setEditing({ ...editing, description: v })}
+          multiline
+        />
         <Field label="リンクURL">
           <input
             value={editing.link}
@@ -112,7 +108,7 @@ export default function ScheduleEditor({ initial }: { initial: ScheduleItem[] })
         {sorted.map((item) => (
           <div key={item.id} className="py-3 flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-light">{item.title || '(無題)'}</p>
+              <p className="text-sm font-light">{item.title.ja || '(無題)'}</p>
               <p className="text-xs text-[var(--muted)]">{item.date}</p>
             </div>
             <div className="flex gap-4">
@@ -133,6 +129,60 @@ export default function ScheduleEditor({ initial }: { initial: ScheduleItem[] })
           + 追加
         </button>
         <SaveButton status={status} onSave={handleSave} />
+      </div>
+    </div>
+  );
+}
+
+function LocalizedField({
+  label,
+  value,
+  onChange,
+  multiline = false,
+}: {
+  label: string;
+  value: LocalizedString;
+  onChange: (v: LocalizedString) => void;
+  multiline?: boolean;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="text-xs text-[var(--muted)]">{label}</label>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-0.5">
+          <span className="text-[10px] text-[var(--muted)] uppercase tracking-widest">JA</span>
+          {multiline ? (
+            <textarea
+              value={value.ja}
+              onChange={(e) => onChange({ ...value, ja: e.target.value })}
+              rows={3}
+              className={inputClass}
+            />
+          ) : (
+            <input
+              value={value.ja}
+              onChange={(e) => onChange({ ...value, ja: e.target.value })}
+              className={inputClass}
+            />
+          )}
+        </div>
+        <div className="space-y-0.5">
+          <span className="text-[10px] text-[var(--muted)] uppercase tracking-widest">EN</span>
+          {multiline ? (
+            <textarea
+              value={value.en}
+              onChange={(e) => onChange({ ...value, en: e.target.value })}
+              rows={3}
+              className={inputClass}
+            />
+          ) : (
+            <input
+              value={value.en}
+              onChange={(e) => onChange({ ...value, en: e.target.value })}
+              className={inputClass}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

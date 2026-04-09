@@ -1,9 +1,9 @@
 [
   {
     "id": "1",
-    "title": "Work Title",
+    "title": { "ja": "作品タイトル", "en": "Work Title" },
     "category": "music",
-    "description": "Short description of this work.",
+    "description": { "ja": "作品の短い説明文。", "en": "Short description of this work." },
     "image": "",
     "link": "https://example.com"
   }
