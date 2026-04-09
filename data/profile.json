@@ -1,0 +1,9 @@
+{
+  "name": "Your Name",
+  "bio": "Artist, musician, and creator based in Japan.",
+  "photo": "/images/profile.jpg",
+  "links": [
+    { "label": "Twitter", "url": "https://twitter.com/" },
+    { "label": "Instagram", "url": "https://instagram.com/" }
+  ]
+}
