@@ -33,6 +33,7 @@ async function writeSection<T>(section: string, data: T): Promise<void> {
       access: 'public',
       contentType: 'application/json',
       addRandomSuffix: false,
+      allowOverwrite: true,
     });
   } else {
     const filePath = path.join(process.cwd(), 'data', `${section}.json`);
