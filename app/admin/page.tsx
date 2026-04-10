@@ -1,3 +1,6 @@
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { verifyToken, COOKIE_NAME } from '@/lib/auth';
 import { getProfile, getWorks, getSchedule } from '@/lib/data';
 import AdminNav from '@/components/admin/AdminNav';
 import ProfileEditor from '@/components/admin/ProfileEditor';
@@ -5,6 +8,16 @@ import WorksEditor from '@/components/admin/WorksEditor';
 import ScheduleEditor from '@/components/admin/ScheduleEditor';
 
 export default async function AdminPage() {
+  // Defense-in-depth: verify JWT server-side (proxy.ts is the primary guard)
+  const store = await cookies();
+  const token = store.get(COOKIE_NAME)?.value;
+  if (!token) redirect('/admin/login');
+  try {
+    await verifyToken(token);
+  } catch {
+    redirect('/admin/login');
+  }
+
   const [profile, works, schedule] = await Promise.all([
     getProfile(),
     getWorks(),

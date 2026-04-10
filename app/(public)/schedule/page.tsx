@@ -4,8 +4,10 @@ import { t } from '@/lib/t';
 import type { Lang } from '@/lib/types';
 
 function formatDate(dateStr: string, lang: Lang): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString(lang === 'ja' ? 'ja-JP' : 'en-US', {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  // Use local-time constructor to avoid UTC→local shift on negative-offset timezones
+  const date = new Date(y, m - 1, d);
+  return date.toLocaleDateString(lang === 'ja' ? 'ja-JP' : 'en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
