@@ -38,9 +38,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Reject oversized requests before parsing the multipart body
+  // Reject clearly oversized requests before parsing the multipart body.
+  // Content-Length on a multipart POST includes boundary + part headers, so
+  // allow a small overhead (4 KB) over the file limit to avoid false 400s.
+  const MULTIPART_OVERHEAD = 4 * 1024;
   const contentLength = Number(request.headers.get('content-length') ?? 0);
-  if (contentLength > MAX_SIZE) {
+  if (contentLength > MAX_SIZE + MULTIPART_OVERHEAD) {
     return NextResponse.json({ error: 'File too large (max 10 MB)' }, { status: 400 });
   }
 

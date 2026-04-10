@@ -32,7 +32,10 @@ function validateProfile(data: unknown): boolean {
       (l) =>
         typeof l === 'object' && l !== null &&
         typeof (l as Record<string, unknown>).label === 'string' &&
-        isSafeLink((l as Record<string, unknown>).url)
+        (
+          (l as Record<string, unknown>).url === '' ||
+          isSafeLink((l as Record<string, unknown>).url)
+        )
     )
   );
 }
