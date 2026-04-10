@@ -23,7 +23,7 @@ export default async function HomePage() {
         )}
         <div className="space-y-4">
           <h1 className="text-4xl font-light tracking-wide">{t(profile.name, lang)}</h1>
-          <p className="text-lg leading-relaxed text-[var(--muted)] max-w-xl">{t(profile.bio, lang)}</p>
+          <p className="text-lg leading-relaxed text-[var(--muted)] max-w-xl whitespace-pre-wrap">{t(profile.bio, lang)}</p>
         </div>
         {profile.links.length > 0 && (
           <div className="flex flex-wrap gap-6 justify-center">

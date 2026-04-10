@@ -47,7 +47,7 @@ export default async function SchedulePage() {
                 <div className="space-y-1">
                   <p className="text-sm font-light">{t(item.title, lang)}</p>
                   {t(item.description, lang) && (
-                    <p className="text-sm text-[var(--muted)] leading-relaxed">{t(item.description, lang)}</p>
+                    <p className="text-sm text-[var(--muted)] leading-relaxed whitespace-pre-wrap">{t(item.description, lang)}</p>
                   )}
                   {item.link && (
                     <a

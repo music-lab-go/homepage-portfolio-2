@@ -31,7 +31,7 @@ export default function WorkCard({ work, lang }: { work: WorkItem; lang: Lang })
         </span>
         <h3 className="text-base font-light">{title}</h3>
         {description && (
-          <p className="text-sm text-[var(--muted)] leading-relaxed">{description}</p>
+          <p className="text-sm text-[var(--muted)] leading-relaxed whitespace-pre-wrap">{description}</p>
         )}
       </div>
     </div>
