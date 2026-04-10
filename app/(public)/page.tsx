@@ -10,12 +10,14 @@ export default async function HomePage() {
     <div className="max-w-3xl mx-auto px-6 py-24">
       <div className="flex flex-col items-start gap-8">
         {profile.photo && (
-          <div className="relative w-full aspect-[3/2] overflow-hidden border border-[var(--border)]">
+          <div className="w-full border border-[var(--border)]">
             <Image
               src={profile.photo}
               alt={t(profile.name, lang)}
-              fill
-              className="object-cover"
+              width={0}
+              height={0}
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="w-full h-auto"
               priority
               unoptimized={profile.photo.startsWith('http')}
             />
