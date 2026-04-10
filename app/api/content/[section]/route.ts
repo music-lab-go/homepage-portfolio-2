@@ -57,6 +57,14 @@ function validateWorks(data: unknown): boolean {
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+function isValidCalendarDate(s: string): boolean {
+  if (!DATE_RE.test(s)) return false;
+  const [y, m, d] = s.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  // If the date rolls over (e.g. Feb 31 → Mar 3), the components won't match
+  return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
+}
+
 function validateSchedule(data: unknown): boolean {
   if (!Array.isArray(data)) return false;
   return data.every((item: unknown) => {
@@ -64,7 +72,7 @@ function validateSchedule(data: unknown): boolean {
     const d = item as Record<string, unknown>;
     return (
       typeof d.id === 'string' &&
-      typeof d.date === 'string' && DATE_RE.test(d.date) &&
+      typeof d.date === 'string' && isValidCalendarDate(d.date) &&
       isLocalizedString(d.title) &&
       isLocalizedString(d.description) &&
       typeof d.link === 'string'
