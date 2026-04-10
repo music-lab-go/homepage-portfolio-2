@@ -8,9 +8,9 @@ export default async function HomePage() {
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-24">
-      <div className="flex flex-col items-center text-center gap-8">
+      <div className="flex flex-col items-start gap-8">
         {profile.photo && (
-          <div className="relative w-48 h-48 overflow-hidden border border-[var(--border)]">
+          <div className="relative w-full aspect-[3/2] overflow-hidden border border-[var(--border)]">
             <Image
               src={profile.photo}
               alt={t(profile.name, lang)}
@@ -23,10 +23,10 @@ export default async function HomePage() {
         )}
         <div className="space-y-4">
           <h1 className="text-4xl font-light tracking-wide">{t(profile.name, lang)}</h1>
-          <p className="text-lg leading-relaxed text-[var(--muted)] max-w-xl whitespace-pre-wrap">{t(profile.bio, lang)}</p>
+          <p className="text-lg leading-relaxed text-[var(--muted)] whitespace-pre-wrap">{t(profile.bio, lang)}</p>
         </div>
         {profile.links.length > 0 && (
-          <div className="flex flex-wrap gap-6 justify-center">
+          <div className="flex flex-wrap gap-6">
             {profile.links.map((link, i) => (
               <a
                 key={i}
