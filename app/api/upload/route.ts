@@ -38,6 +38,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // Reject oversized requests before parsing the multipart body
+  const contentLength = Number(request.headers.get('content-length') ?? 0);
+  if (contentLength > MAX_SIZE) {
+    return NextResponse.json({ error: 'File too large (max 10 MB)' }, { status: 400 });
+  }
+
   const formData = await request.formData();
   const file = formData.get('file') as File | null;
 
@@ -45,7 +51,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'No file provided' }, { status: 400 });
   }
 
-  // Size check (before reading full content into memory)
+  // Secondary size check using parsed file size (handles missing Content-Length)
   if (file.size > MAX_SIZE) {
     return NextResponse.json({ error: 'File too large (max 10 MB)' }, { status: 400 });
   }
