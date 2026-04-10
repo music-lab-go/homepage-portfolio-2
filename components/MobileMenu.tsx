@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import LangSwitcher from './LangSwitcher';
 import type { Lang } from '@/lib/types';
@@ -17,14 +17,64 @@ type Props = {
 
 export default function MobileMenu({ lang, navItems }: Props) {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // 開閉に合わせてフォーカスを移動
+  useEffect(() => {
+    if (open) {
+      closeButtonRef.current?.focus();
+    } else {
+      triggerRef.current?.focus();
+    }
+  }, [open]);
+
+  // Escape キーで閉じる
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open]);
+
+  // フォーカストラップ
+  const handlePanelKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab' || !panelRef.current) return;
+    const focusables = Array.from(
+      panelRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    );
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  };
+
+  const menuId = 'mobile-menu-panel';
 
   return (
     <>
       {/* ハンバーガーボタン */}
       <button
+        ref={triggerRef}
         onClick={() => setOpen(true)}
-        className="p-2 text-[var(--foreground)] hover:opacity-60 transition-opacity"
+        aria-expanded={open}
+        aria-controls={menuId}
         aria-label="メニューを開く"
+        className="p-2 text-[var(--foreground)] hover:opacity-60 transition-opacity"
       >
         <svg width="20" height="16" viewBox="0 0 20 16" fill="currentColor" aria-hidden="true">
           <rect y="0"  width="20" height="1.5" />
@@ -35,9 +85,17 @@ export default function MobileMenu({ lang, navItems }: Props) {
 
       {/* フルスクリーンメニュー */}
       {open ? (
-        <div className="fixed inset-0 bg-[var(--background)] z-50 flex flex-col">
+        <div
+          id={menuId}
+          ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="ナビゲーションメニュー"
+          onKeyDown={handlePanelKeyDown}
+          className="fixed inset-0 bg-[var(--background)] z-50 flex flex-col"
+        >
           {/* ヘッダー行 */}
-          <div className="h-14 flex items-center justify-between px-6 border-b border-[var(--border)]">
+          <div className="h-14 flex items-center justify-between px-6 border-b border-[var(--border)] shrink-0">
             <Link
               href="/"
               onClick={() => setOpen(false)}
@@ -46,19 +104,20 @@ export default function MobileMenu({ lang, navItems }: Props) {
               Portfolio
             </Link>
             <button
+              ref={closeButtonRef}
               onClick={() => setOpen(false)}
-              className="p-2 text-[var(--foreground)] hover:opacity-60 transition-opacity"
               aria-label="メニューを閉じる"
+              className="p-2 text-[var(--foreground)] hover:opacity-60 transition-opacity"
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                 <line x1="1" y1="1" x2="17" y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <line x1="17" y1="1" x2="1" y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <line x1="17" y1="1" x2="2" y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </button>
           </div>
 
-          {/* ナビリンク */}
-          <nav className="flex flex-col items-start px-8 py-10 gap-8">
+          {/* ナビリンク（スクロール可能） */}
+          <nav className="flex flex-col items-start px-8 py-10 gap-8 overflow-y-auto flex-1 min-h-0">
             {navItems.map((item) => (
               <Link
                 key={item.label}
@@ -72,7 +131,7 @@ export default function MobileMenu({ lang, navItems }: Props) {
           </nav>
 
           {/* 言語切り替え */}
-          <div className="px-8 mt-auto pb-10">
+          <div className="px-8 pb-10 pt-4 shrink-0">
             <LangSwitcher current={lang} />
           </div>
         </div>
