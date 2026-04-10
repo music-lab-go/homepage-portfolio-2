@@ -26,15 +26,30 @@ function validateProfile(data: unknown): boolean {
   return (
     isLocalizedString(d.name) &&
     isLocalizedString(d.bio) &&
-    typeof d.photo === 'string' &&
+    isSafeImageUrl(d.photo) &&
     Array.isArray(d.links) &&
     (d.links as unknown[]).every(
       (l) =>
         typeof l === 'object' && l !== null &&
         typeof (l as Record<string, unknown>).label === 'string' &&
-        typeof (l as Record<string, unknown>).url === 'string'
+        (
+          (l as Record<string, unknown>).url === '' ||
+          isSafeLink((l as Record<string, unknown>).url)
+        )
     )
   );
+}
+
+// Safe URL helpers
+const SAFE_LINK_RE = /^https?:\/\/.+/i;
+const SAFE_IMAGE_RE = /^(\/[^\s]|https:\/\/).+/i;
+
+function isSafeLink(v: unknown): boolean {
+  return typeof v === 'string' && SAFE_LINK_RE.test(v);
+}
+
+function isSafeImageUrl(v: unknown): boolean {
+  return typeof v === 'string' && (v === '' || SAFE_IMAGE_RE.test(v));
 }
 
 const VALID_CATEGORIES = new Set(['music', 'art', 'project']);
@@ -49,8 +64,8 @@ function validateWorks(data: unknown): boolean {
       isLocalizedString(d.title) &&
       VALID_CATEGORIES.has(d.category as string) &&
       isLocalizedString(d.description) &&
-      typeof d.image === 'string' &&
-      typeof d.link === 'string'
+      isSafeImageUrl(d.image) &&
+      (d.link === '' || isSafeLink(d.link))
     );
   });
 }
@@ -75,7 +90,7 @@ function validateSchedule(data: unknown): boolean {
       typeof d.date === 'string' && isValidCalendarDate(d.date) &&
       isLocalizedString(d.title) &&
       isLocalizedString(d.description) &&
-      typeof d.link === 'string'
+      (d.link === '' || isSafeLink(d.link))
     );
   });
 }
