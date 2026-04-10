@@ -20,12 +20,16 @@ export default function MobileMenu({ lang, navItems }: Props) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  // メニューが一度でも開かれたかを追跡（初期マウント時のフォーカス奪取を防ぐ）
+  const hasOpenedRef = useRef(false);
 
   // 開閉に合わせてフォーカスを移動
   useEffect(() => {
     if (open) {
+      hasOpenedRef.current = true;
       closeButtonRef.current?.focus();
-    } else {
+    } else if (hasOpenedRef.current) {
+      // 閉じた場合のみトリガーにフォーカスを戻す（初期マウント時は除く）
       triggerRef.current?.focus();
     }
   }, [open]);
